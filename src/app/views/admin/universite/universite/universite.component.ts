@@ -1,10 +1,212 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { AjouterUniversiteComponent } from '../ajouter-universite/ajouter-universite.component';
+import { Foyer } from '../Model/Foyer';
+import { Universite } from '../Model/Universite';
+import { UniversiteService } from '../service/universite.service';
+import { jsPDF } from "jspdf";
+import 'jspdf-autotable';
 
 @Component({
   selector: 'app-universite',
   templateUrl: './universite.component.html',
   styleUrls: ['./universite.component.css']
 })
-export class UniversiteComponent {
+export class UniversiteComponent implements OnInit{
+  title = 'Angular Search Using ng2-search-filter';
+  searchText;
+    //initialiser une liste de type foyer
+    universites: Universite;
+    universite: Universite[] = [];
+    listefoyer:Foyer[]=[];
+    //déclaration pagination 
+    p:number = 1 ; 
+    POSTS: any;
+    page: number = 1;
+    count: number = 0;
+    tableSize: number = 10;
+    tableSizes: any = [5, 10, 15, 20];
 
+    constructor( private ServiceUniversite:UniversiteService,private dialog: MatDialog) { }
+
+  ngOnInit(): void {
+    this.getAllUniversite();
+    this.getAllFoyers();
+  
+
+  
+  }
+  //Ajout 
+  openDialogAjout(): void {
+    const dialogRef = this.dialog.open(AjouterUniversiteComponent, {
+      width: '50%',
+      height: '70%',
+      position: {
+        left: '30%',
+      },
+
+      data : {
+        action : 'add'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.ServiceUniversite.adduniversite(result.universiteToAdd).subscribe((addedU) => {
+        console.log("Added uni : ",addedU);
+        console.log("foyer to update : ",result.foyerToUpdate);
+        result.foyerToUpdate.universite = addedU;
+        this.ServiceUniversite.updateFoyer(result.foyerToUpdate).subscribe((foyerUpdated) => {
+          console.log("last foer updated : ", foyerUpdated);
+        });
+      console.log(`Dialog closed with result:, ${result}`);
+    });
+    
+  });
 }
+  //Pour nom foyer
+  hasFoyer(listefoyer: any[], idUniversite: number): boolean {
+    return listefoyer.some(listef => listef.universite?.idUniversite === idUniversite);
+  }
+
+  //Pour nom foyer
+  getFoyerName(listefoyer: any[], idUniversite: number): string {
+      const foyer = listefoyer.find(listef => listef.universite?.idUniversite === idUniversite);
+      return foyer ? foyer.nomFoyer : '';
+    }
+  //pour get liste de universite
+  getAllUniversite(){
+    this.ServiceUniversite.getAllUniversite().subscribe((data : Universite[])=>{
+      console.log("all data  ",data);    
+      this.universite = data;
+      console.log(this.universite);
+
+    })
+  }
+  //pour supprimer universite
+  deleteUniversite(id:any){
+    if (confirm("Voulez vous vraiment supprimer université ?")) {
+      this.ServiceUniversite.deleteUniversite(id).subscribe(() => {
+        alert('Suppression effectuée avec succés');
+        window.location.reload();
+        });
+  }
+}
+  //Pour get all foyers
+  getAllFoyers(){
+    this.ServiceUniversite.getAllFoyers().subscribe((data : Foyer[])=>{
+      this.listefoyer = data;
+      console.log("all all foyers  : ",this.listefoyer);
+      console.log("ID UNIVERSITTTTTTTT  : ",this.listefoyer[0].universite.idUniversite );
+    })
+
+  }
+   showlisteuniversite(f:any){
+    console.log(f)
+    this.universite=f.universtites  
+    console.log(this.universite)
+    }
+
+    //Update 
+    openUniversiteUpdate(universite: Universite): void {
+      const dialogRef = this.dialog.open(AjouterUniversiteComponent, {
+        width: '50%',
+        height: '70%',
+        position: {
+          left: '30%',
+        },
+        data: {
+          action: 'update',
+          universite: universite // Données de l'université à mettre à jour
+        }
+      });
+    
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Fermeture du dialogue avec le résultat : ${result}`);
+        if (result) {
+          if (result.UpdateUniversite) {
+            // Mettre à jour l'université
+            this.ServiceUniversite.updateUniversite(universite).subscribe((updatedUniversite) => {
+              console.log('Université mise à jour :', updatedUniversite);
+
+              if (result.foyerToUpdate) {
+                result.foyerToUpdate.universite = updatedUniversite;
+                this.ServiceUniversite.updateFoyer(result.foyerToUpdate).subscribe((foyerUpdated) => {
+                  console.log("Dernier foyer mis à jour :", foyerUpdated);
+                });
+              }
+              console.log("Fermeture du dialogue avec le résultat :", result);
+            });
+          } else if (result.foyerToUpdate) {
+            // Supprimer le nom de l'université
+            result.universiteToAdd = universite;
+            result.foyerToUpdate.universite = universite;
+            this.ServiceUniversite.updateFoyer(result.foyerToUpdate).subscribe((foyerUpdated) => {
+              console.log("Dernier foyer mis à jour :", foyerUpdated);
+              console.log("Fermeture du dialogue avec le résultat :", result);
+            });
+          }
+        }
+      });
+    }
+    
+    
+    
+//    
+
+
+    
+  
+  
+    //Pagination 
+    postList(): void {
+      this.ServiceUniversite. getAllUniversite().subscribe((response) => {
+        this.POSTS = response;
+        console.log(this.POSTS);
+      });
+    }
+    onTableDataChange(event: any) {
+      this.page = event;
+      this.postList();
+    }
+    
+    onTableSizeChange(event: any): void {
+      this.tableSize = event.target.value;
+      this.page = 1;
+      this.postList();
+  
+    }
+   
+    //Print PDF 
+    printSimplePdf() {
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'in',
+        format: [4, 8]
+      });
+    
+      const headers = ['Nom universite', 'Adresse', 'Nom Foyer'];
+    
+      const data = this.universite.map(universite => {
+        const foyer = this.listefoyer.find(f => f.universite?.idUniversite === universite.idUniversite);
+        const nomFoyer = foyer ? foyer.nomFoyer : 'Non affectée'; // Get the nomFoyer if available, otherwise set it to 'non assignée'
+        return [
+          universite.nomUniversite,
+          universite.adresse,
+          nomFoyer
+        ];
+      });
+    
+      (doc as any).autoTable({
+        head: [headers],
+        body: data
+      });
+    
+      doc.save('Liste des universités.pdf');
+    }
+  }
+
+
+
+
+
+
