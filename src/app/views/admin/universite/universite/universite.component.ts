@@ -6,6 +6,8 @@ import { Universite } from '../Model/Universite';
 import { UniversiteService } from '../service/universite.service';
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-universite',
@@ -82,15 +84,34 @@ export class UniversiteComponent implements OnInit{
 
     })
   }
-  //pour supprimer universite
-  deleteUniversite(id:any){
-    if (confirm("Voulez vous vraiment supprimer université ?")) {
-      this.ServiceUniversite.deleteUniversite(id).subscribe(() => {
-        alert('Suppression effectuée avec succés');
+
+//delete
+deleteUniversite(id:any){
+  Swal.fire({
+    title: 'Confirmez-vous la suppression?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#5e72e4',
+    cancelButtonColor: "#d33",
+    confirmButtonText: 'Oui, supprimez-le !',
+    cancelButtonText: 'Annuler' 
+  }).then((result) => {
+  if (result.isConfirmed) {
+    this.ServiceUniversite.deleteUniversite(id).subscribe(() => {
+      Swal.fire({
+        title: 'Supprimé!',
+        text: 'Votre opération a été complétée avec succès.',
+        icon: 'success'
+      }).then(() => {
         window.location.reload();
-        });
+      });
+    });
   }
+})
 }
+
+
+
   //Pour get all foyers
   getAllFoyers(){
     this.ServiceUniversite.getAllFoyers().subscribe((data : Foyer[])=>{

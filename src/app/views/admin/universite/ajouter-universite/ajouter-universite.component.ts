@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Foyer } from '../Model/Foyer';
 import { Universite } from '../Model/Universite';
 import { UniversiteService } from '../service/universite.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-ajouter-universite',
@@ -62,10 +63,11 @@ export class AjouterUniversiteComponent implements OnInit {
       this.ServiceUniversite.adduniversite(this.universite).subscribe(data => {
         console.log("ajout avec succès", data);
         this.dialogRef.close(this.universite); 
-        // window.location.reload();
+        window.location.reload();
 
             
         });
+
       } else {
         this.ServiceUniversite.getFoyerByID(this.idFoyer.toString()).subscribe((f) => {
           console.log("foyer to update f: ",f);
@@ -75,8 +77,16 @@ export class AjouterUniversiteComponent implements OnInit {
             universiteToAdd : this.universite
   
           }
+          Swal.fire({
+            
+            icon: "success",
+            title: "Opération réussie",
+            showConfirmButton: false,
+            timer: 1500
+          });
           this.dialogRef.close(this.dataToAdd);
           
+
         });
 
       }

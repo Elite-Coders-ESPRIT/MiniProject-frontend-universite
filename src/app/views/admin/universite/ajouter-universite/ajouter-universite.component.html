@@ -23,6 +23,8 @@
                   name="nomuniversite"
                   [(ngModel)]="universite.nomUniversite"
                   required
+                  minlength="2"
+                  maxlength="20"
                   [placeholder]="'Entrez le nom de l\'université'"
                 />
                 <div
@@ -34,6 +36,17 @@
                   class="text-danger"
                 >
                   Nom de l'université requis
+                </div>
+                <div
+                  *ngIf="
+                    universiteForm.controls['nomuniversite'].hasError(
+                      'minlength'
+                    ) && universiteForm.controls['nomuniversite'].dirty
+                  "
+                  class="text-danger"
+                >
+                  La longueur minimale du nom de l'université est de 2
+                  caractères.
                 </div>
               </div>
             </div>
@@ -47,6 +60,7 @@
                   name="adresse"
                   [(ngModel)]="universite.adresse"
                   required
+                  minlength="2"
                   [placeholder]="'Entrez l\'adresse de l\'université'"
                 />
                 <div
@@ -58,6 +72,16 @@
                   class="text-danger"
                 >
                   Adresse de l'université requise
+                </div>
+                <div
+                  *ngIf="
+                    universiteForm.controls['adresse'].hasError('minlength') &&
+                    universiteForm.controls['adresse'].dirty
+                  "
+                  class="text-danger"
+                >
+                  La longueur minimale de l'adresse de l'université est de 2
+                  caractères.
                 </div>
               </div>
             </div>
@@ -150,6 +174,8 @@
                 [(ngModel)]="universite.adresse"
                 required
                 [placeholder]="'Entrez l\'adresse de l\'université'"
+                minlength="3"
+                maxlength="50"
               />
               <div
                 *ngIf="

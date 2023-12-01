@@ -1,5 +1,4 @@
 ...
-
 <div class="mt-5">
   <div class="container-fluid py-4">
     <div class="row">
@@ -18,7 +17,7 @@
                   <i class="fas fa-plus"></i> Ajouter Université
                 </button>
               </div>
-              <div class="search-hero mb-1">
+              <div class="search-hero mb-1"  >
                 <h3 class="search-hero mb-1">Recherche Multicritère</h3>
                 <input
                   class="form-control form-control-sm"
@@ -26,7 +25,7 @@
                   name="search"
                   [(ngModel)]="searchText"
                   autocomplete="off"
-                  placeholder=" Rechercher Universite "
+                  placeholder=" Rechercher Universite  "
                   style="width: 200px"
                 />
                 <button class="btn text-danger mt-2" (click)="printSimplePdf()">
@@ -39,7 +38,7 @@
                     class="table table-vcenter table-mobile-md card-table"
                     border="1"
                   >
-                    <thead>
+                    <thead  class=" text-dark">
                       <tr>
                         <th>Id Université</th>
                         <th>Nom Université</th>
@@ -76,7 +75,7 @@
                             >
                               <a
                                 class="btn btn-warning btn-sm"
-                                style="background-color: rgb(0, 0, 0)"
+                                style="background-color: #413f3f"
                               >
                                 {{
                                   getFoyerName(
@@ -93,7 +92,7 @@
                             >
                               <a
                                 class="btn btn-warning btn-sm"
-                                style="background-color: rgb(231, 164, 102)"
+                                style="background-color: #ebaa6e"
                               >
                                 Non affecté
                               </a>
@@ -104,22 +103,30 @@
                           </ng-template>
                         </td>
                         <td class="col">
-                          <a class="btn text-warning">
+                          <!--a class="btn text-warning">
                             <span
                               class="material-icons"
                               (click)="openUniversiteUpdate(universites)"
                             >
                               edit
-                            </span></a
-                          ><a class="btn text-danger">
+                            </span></a-->
+                            <!--a class="btn text-danger">
                             <span
                               class="material-icons"
                               (click)="
                                 deleteUniversite(universites.idUniversite)
                               "
                               >delete</span
-                            ></a
-                          >
+                            ></a-->
+                            <button mat-fab [ngStyle]="{ 'background-color': 'white', 'margin-right': '8px' }" (click)="openUniversiteUpdate(universites)">
+                              <mat-icon style="color: rgb(255, 145, 0);">edit</mat-icon>
+                            </button>
+                            <button mat-fab [ngStyle]="{ 'background-color': 'white' }" (click)="
+                            deleteUniversite(universites.idUniversite)
+                          ">
+                              <mat-icon style="color: red;">delete</mat-icon>
+                            </button>
+                            
                         </td>
                       </tr>
                     </tbody>

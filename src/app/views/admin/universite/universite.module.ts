@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { AjouterUniversiteComponent } from './ajouter-universite/ajouter-universite.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { MatButtonModule } from '@angular/material/button';
 
 
 
@@ -22,7 +23,7 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
   imports: [
     NgxPaginationModule,
     CommonModule,
-    UniversiteRoutingModule,MatIconModule,FormsModule,Ng2SearchPipeModule
+    UniversiteRoutingModule,MatIconModule,FormsModule,Ng2SearchPipeModule,MatButtonModule,
 
 
   ]
