@@ -36,8 +36,6 @@ export class UniversiteComponent implements OnInit{
     this.getAllUniversite();
     this.getAllFoyers();
   
-
-  
   }
   //Ajout 
   openDialogAjout(): void {
@@ -52,16 +50,26 @@ export class UniversiteComponent implements OnInit{
         action : 'add'
       }
     });
-
     dialogRef.afterClosed().subscribe(result => {
+      Swal.fire({
+            
+        icon: "success",
+        title: "Opération réussie",
+        showConfirmButton: false,
+        timer: 1500
+      });
       this.ServiceUniversite.adduniversite(result.universiteToAdd).subscribe((addedU) => {
         console.log("Added uni : ",addedU);
+
         console.log("foyer to update : ",result.foyerToUpdate);
         result.foyerToUpdate.universite = addedU;
         this.ServiceUniversite.updateFoyer(result.foyerToUpdate).subscribe((foyerUpdated) => {
+
           console.log("last foer updated : ", foyerUpdated);
+        
         });
       console.log(`Dialog closed with result:, ${result}`);
+      
     });
     
   });
@@ -112,7 +120,6 @@ deleteUniversite(id:any){
 }
 
 
-
   //Pour get all foyers
   getAllFoyers(){
     this.ServiceUniversite.getAllFoyers().subscribe((data : Foyer[])=>{
@@ -156,16 +163,7 @@ deleteUniversite(id:any){
                   });
                 });
           } 
-          /*else if (result.foyerToUpdate) {
-            // Supprimer le nom de l'université
-            result.universiteToAdd = universite;
-            result.foyerToUpdate.universite = universite;
-            this.ServiceUniversite.updateFoyer(result.foyerToUpdate).subscribe((foyerUpdated) => {
-              console.log("Dernier foyer mis à jour :", foyerUpdated);
-              console.log("Fermeture du dialogue avec le résultat :", result);
-
-            });
-          }*/
+        
         }
       });
     }

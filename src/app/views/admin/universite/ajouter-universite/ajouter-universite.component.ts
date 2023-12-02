@@ -14,8 +14,7 @@ import Swal from 'sweetalert2';
 })
 
 export class AjouterUniversiteComponent implements OnInit {
-  
-  
+
   @Input() action? : string;
   universiteForm: NgForm; 
   Foyers:Foyer[]=[];
@@ -51,23 +50,19 @@ export class AjouterUniversiteComponent implements OnInit {
         adresse: this.data.universite.adresse || ''
         
       };
-
-
     }
-
 
     this.getFoyerNull();
     console.log("edit", this.data);
   }
 
+  //save universite
   saveUniversite(): void {
     if (this.idFoyer == null) {
       this.ServiceUniversite.adduniversite(this.universite).subscribe(data => {
         console.log("ajout avec succès", data);
         this.dialogRef.close(this.universite); 
-        window.location.reload();
-
-            
+        window.location.reload();   
         });
 
       } else {
@@ -77,7 +72,6 @@ export class AjouterUniversiteComponent implements OnInit {
           this.dataToAdd = {
             foyerToUpdate : this.foyerToU,
             universiteToAdd : this.universite
-  
           }
           Swal.fire({
             
@@ -95,25 +89,6 @@ export class AjouterUniversiteComponent implements OnInit {
 
     }
 
-
-
-  //saveUniversite(): void {
-    // if(this.universite != undefined){
-      //this.ServiceUniversite.getFoyerByID(this.idFoyer.toString()).subscribe((f) => {
-        //console.log("foyer to update f: ",f);
-        //this.foyerToU = f;
-        //this.dataToAdd = {
-          //foyerToUpdate : this.foyerToU,
-          //universiteToAdd : this.universite
-
-        //}
-        
-        //this.dialogRef.close(this.dataToAdd);         
-     // });
-      
-
-    //}
-
 getFoyerNull(){
   this.ServiceUniversite.getAllFoyer().subscribe((data:Foyer[]) =>{
     this.Foyers=data;
@@ -122,11 +97,10 @@ getFoyerNull(){
 
 }
 
-
+//update
 onUpdate(): void {
   if (this.idFoyer == null) {
     
-
     } else {
       this.ServiceUniversite.getFoyerByID(this.idFoyer.toString()).subscribe((f) => {
         console.log("foyer to update f: ",f);
