@@ -7,6 +7,7 @@ import { UniversiteService } from '../service/universite.service';
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
 import Swal from 'sweetalert2';
+import * as XLSX from 'xlsx';
 
 
 @Component({
@@ -144,40 +145,34 @@ deleteUniversite(id:any){
       dialogRef.afterClosed().subscribe(result => {
         console.log(`Fermeture du dialogue avec le résultat : ${result}`);
         if (result) {
-          if (result.UpdateUniversite) {
+          if (result.universiteToAdd && result.foyerToUpdate) {
             // Mettre à jour l'université
-            this.ServiceUniversite.updateUniversite(universite).subscribe((updatedUniversite) => {
-              console.log('Université mise à jour :', updatedUniversite);
-
-              if (result.foyerToUpdate) {
-                result.foyerToUpdate.universite = updatedUniversite;
-                this.ServiceUniversite.updateFoyer(result.foyerToUpdate).subscribe((foyerUpdated) => {
-                  console.log("Dernier foyer mis à jour :", foyerUpdated);
+                this.ServiceUniversite.updateUniversite(result.universiteToAdd).subscribe((updatedUniversite) => {
+                  result.foyerToUpdate.universite = updatedUniversite;
+                  console.log(result.foyerToUpdate.universite);
+                  console.log("Fermeture du dialogue avec le résultat :", result);
+                  this.ServiceUniversite.updateFoyer(result.foyerToUpdate).subscribe((foyerUpdated) => {
+                    console.log("Dernier foyer mis à jour :", foyerUpdated);
+                  });
                 });
-              }
-              console.log("Fermeture du dialogue avec le résultat :", result);
-            });
-          } else if (result.foyerToUpdate) {
+          } 
+          /*else if (result.foyerToUpdate) {
             // Supprimer le nom de l'université
             result.universiteToAdd = universite;
             result.foyerToUpdate.universite = universite;
             this.ServiceUniversite.updateFoyer(result.foyerToUpdate).subscribe((foyerUpdated) => {
               console.log("Dernier foyer mis à jour :", foyerUpdated);
               console.log("Fermeture du dialogue avec le résultat :", result);
+
             });
-          }
+          }*/
         }
       });
     }
     
     
-    
-//    
 
 
-    
-  
-  
     //Pagination 
     postList(): void {
       this.ServiceUniversite. getAllUniversite().subscribe((response) => {
@@ -205,6 +200,15 @@ deleteUniversite(id:any){
         format: [4, 8]
       });
     
+        // Ajouter la date et l'heure en haut du PDF
+  const currentDate = new Date().toLocaleDateString();
+  const currentTime = new Date().toLocaleTimeString();
+  const dateText = `Date: ${currentDate} - Heure: ${currentTime}`;
+
+  doc.setFontSize(10);
+
+  doc.text(dateText, 0.5, 0.5);
+
       const headers = ['Nom universite', 'Adresse', 'Nom Foyer'];
     
       const data = this.universite.map(universite => {
@@ -224,6 +228,15 @@ deleteUniversite(id:any){
     
       doc.save('Liste des universités.pdf');
     }
+
+    //excel
+    exportToExcel(): void {
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.universite);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Universite');
+      XLSX.writeFile(wb, 'Liste des universités.xlsx');
+    }
+    
   }
 
 

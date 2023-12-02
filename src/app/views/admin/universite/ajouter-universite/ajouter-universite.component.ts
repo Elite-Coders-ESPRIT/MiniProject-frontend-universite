@@ -14,6 +14,8 @@ import Swal from 'sweetalert2';
 })
 
 export class AjouterUniversiteComponent implements OnInit {
+  
+  
   @Input() action? : string;
   universiteForm: NgForm; 
   Foyers:Foyer[]=[];
@@ -122,7 +124,31 @@ getFoyerNull(){
 
 
 onUpdate(): void {
-  this.dialogRef.close(this.universite); 
+  if (this.idFoyer == null) {
+    
+
+    } else {
+      this.ServiceUniversite.getFoyerByID(this.idFoyer.toString()).subscribe((f) => {
+        console.log("foyer to update f: ",f);
+        this.foyerToU = f;
+        this.dataToAdd = {
+          foyerToUpdate : this.foyerToU,
+          universiteToAdd : this.universite
+
+        }
+        Swal.fire({
+          
+          icon: "success",
+          title: "Opération réussie",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        this.dialogRef.close(this.dataToAdd);
+        
+        
+      });
+
+    }
 }
 // bouton annuler 
 onAnnulerClick(): void {
