@@ -10,6 +10,7 @@ import { AjouterUniversiteComponent } from './ajouter-universite/ajouter-univers
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { MatButtonModule } from '@angular/material/button';
+import { HighlightDirective } from './highlight.directive';
 
 
 
@@ -18,6 +19,9 @@ import { MatButtonModule } from '@angular/material/button';
   declarations: [
     UniversiteComponent,
     AjouterUniversiteComponent,
+    HighlightDirective
+
+
     
   ],
   imports: [
