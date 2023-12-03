@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { NgForm, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Foyer } from '../Model/Foyer';
@@ -16,7 +16,8 @@ import Swal from 'sweetalert2';
 export class AjouterUniversiteComponent implements OnInit {
 
   @Input() action? : string;
-  universiteForm: NgForm; 
+  validators : Validators[] = [];
+  universiteForm: NgForm;
   Foyers:Foyer[]=[];
   universite:Universite={
     idUniversite:0,
@@ -62,7 +63,11 @@ export class AjouterUniversiteComponent implements OnInit {
       this.ServiceUniversite.adduniversite(this.universite).subscribe(data => {
         console.log("ajout avec succès", data);
         this.dialogRef.close(this.universite); 
-        window.location.reload();   
+        this.ServiceUniversite.showToast();
+
+        setTimeout(() => {
+        window.location.reload();
+      }, 2000);  
         });
 
       } else {
@@ -73,13 +78,7 @@ export class AjouterUniversiteComponent implements OnInit {
             foyerToUpdate : this.foyerToU,
             universiteToAdd : this.universite
           }
-          Swal.fire({
-            
-            icon: "success",
-            title: "Opération réussie",
-            showConfirmButton: false,
-            timer: 1500
-          });
+          this.ServiceUniversite.showToast();
           this.dialogRef.close(this.dataToAdd);
           
 
@@ -99,8 +98,8 @@ getFoyerNull(){
 
 //update
 onUpdate(): void {
-  if (this.idFoyer == null) {
-    
+  if (this.idFoyer == null || this.universite.idUniversite == 9) {
+    this.dialogRef.close();
     } else {
       this.ServiceUniversite.getFoyerByID(this.idFoyer.toString()).subscribe((f) => {
         console.log("foyer to update f: ",f);
@@ -110,13 +109,7 @@ onUpdate(): void {
           universiteToAdd : this.universite
 
         }
-        Swal.fire({
-          
-          icon: "success",
-          title: "Opération réussie",
-          showConfirmButton: false,
-          timer: 1500
-        });
+
         this.dialogRef.close(this.dataToAdd);
         
         

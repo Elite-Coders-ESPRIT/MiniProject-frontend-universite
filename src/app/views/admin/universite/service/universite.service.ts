@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
 import { Foyer } from '../Model/Foyer';
 import { Universite } from '../Model/Universite';
 
@@ -45,5 +46,13 @@ updateFoyer(foyer:Foyer): Observable<Foyer>{
 
 getFoyerByID(idfoyer:string): Observable<Foyer>{
   return this._http.get<Foyer>("http://localhost:8081/TpEtudeDeCas/foyer/"+idfoyer,this.httpOptions);
+}
+showToast(): void{
+  Swal.fire({
+    icon: "success",
+    title: "Opération réussie",
+    showConfirmButton: false,
+    timer: 1500
+  }); 
 }
 }

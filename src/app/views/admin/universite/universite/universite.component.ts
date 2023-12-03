@@ -17,9 +17,9 @@ import * as XLSX from 'xlsx';
 })
 export class UniversiteComponent implements OnInit{
   title = 'Angular Search Using ng2-search-filter';
-  searchText;
+  searchText="";
     //initialiser une liste de type foyer
-    universites: Universite;
+    universites: Universite = new Universite();
     universite: Universite[] = [];
     listefoyer:Foyer[]=[];
     //déclaration pagination 
@@ -51,16 +51,11 @@ export class UniversiteComponent implements OnInit{
       }
     });
     dialogRef.afterClosed().subscribe(result => {
-      Swal.fire({
-            
-        icon: "success",
-        title: "Opération réussie",
-        showConfirmButton: false,
-        timer: 1500
-      });
+      
+    
       this.ServiceUniversite.adduniversite(result.universiteToAdd).subscribe((addedU) => {
         console.log("Added uni : ",addedU);
-
+          
         console.log("foyer to update : ",result.foyerToUpdate);
         result.foyerToUpdate.universite = addedU;
         this.ServiceUniversite.updateFoyer(result.foyerToUpdate).subscribe((foyerUpdated) => {
@@ -71,8 +66,8 @@ export class UniversiteComponent implements OnInit{
       console.log(`Dialog closed with result:, ${result}`);
       
     });
-    
   });
+  
 }
   //Pour nom foyer
   hasFoyer(listefoyer: any[], idUniversite: number): boolean {

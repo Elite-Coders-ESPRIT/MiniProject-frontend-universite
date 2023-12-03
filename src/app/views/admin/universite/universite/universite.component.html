@@ -32,7 +32,7 @@
                           type="text"
                           [(ngModel)]="searchText"
                           class="form-control"
-                          placeholder="Rechercher des bloc par nom..."
+                          placeholder="Rechercher des universites par nom..."
                           style="width: 200px"
                         />
                       </div>
@@ -43,7 +43,15 @@
                   <i class="fas fa-file-pdf"></i> Télécharger le PDF
                 </button>
 
-                <a class="col-1 btn btn-warning mx-2"
+                <button
+                  class="btn mt-2"
+                  style="color: #008000"
+                  (click)="exportToExcel()"
+                >
+                  <i class="fas fa-file-excel"></i> Télécharger l'Excel
+                </button>
+
+                <!--a class="col-1 btn btn-warning mx-2"
                   ><span (click)="exportToExcel()" class="material-icons">
                     file_download
                   </span>
@@ -52,7 +60,7 @@
                   ><span (click)="printSimplePdf()" class="material-icons">
                     picture_as_pdf
                   </span>
-                </a>
+                </a-->
               </div>
               <div class="card-body px-0 pt-0 pb-2">
                 <div class="table-responsive p-0">
